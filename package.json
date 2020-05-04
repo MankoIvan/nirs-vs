@@ -18,6 +18,8 @@
   "homepage": "https://github.com/MankoIvan/nirs-vs#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "ffmpeg": "0.0.4",
+    "node-rtsp-recorder": "^1.0.3",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0"
   },
