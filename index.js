@@ -15,7 +15,18 @@ io.on('connection', (socket) => {
 const transferIO = require('socket.io-client');
 
 const transferSocket = transferIO.connect('http...')
+/////
+const Recorder = require('node-rtsp-recorder').Recorder
+ 
+var rec = new Recorder({
+    url: 'rtsp://192.168.0.159:8554/unicast',
+    folder: '/Users/inoi2',
+    name: 'cam1',
+    type: 'image',
+})
 
-
+rec.captureImage(() => {
+    console.log('Image Captured')
+})
 
 server.listen(3000);
