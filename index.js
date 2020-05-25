@@ -20,14 +20,30 @@ const firebaseApp = firebase.initializeApp(firebaseConfig);
 const agent = new https.Agent({
 	rejectUnauthorized: false
 });
-
+setTimeout(() => {
+    setInterval(() => {
+        https.get('https://root:ismart12@192.168.0.159/cgi-bin/currentpic.cgi', {agent}, (resp) => {
+            resp.setEncoding('base64');
+            body = "data:" + resp.headers["content-type"] + ";base64,";
+            resp.on('data', (data) => { body += data});
+            resp.on('end', () => {
+                firebase.database().ref('image/ipcam1').set({
+                    data: body
+                });
+            });
+        }).on('error', (e) => {
+            console.log(`Got error: ${e.message}`);
+        });
+    
+    }, 1000);
+}, 200)
 setInterval(() => {
-    https.get('https://root:ismart12@192.168.0.159/cgi-bin/currentpic.cgi', {agent}, (resp) => {
+    https.get('https://root:ismart12@192.168.0.175/cgi-bin/currentpic.cgi', {agent}, (resp) => {
         resp.setEncoding('base64');
         body = "data:" + resp.headers["content-type"] + ";base64,";
         resp.on('data', (data) => { body += data});
         resp.on('end', () => {
-            firebase.database().ref('image/currentImage').set({
+            firebase.database().ref('image/ipcam2').set({
                 data: body
             });
         });
@@ -35,68 +51,6 @@ setInterval(() => {
         console.log(`Got error: ${e.message}`);
     });
 
-}, 500);
-
-/*
-const Recorder = require('node-rtsp-recorder').Recorder
- 
-var rec = new Recorder({
-    url: 'rtsp://192.168.0.159:8554/unicast',
-    folder: './',
-    name: 'cam1',
-    type: 'image',
-    fileNameFormat: 'k-m-s',
-    directoryPathFormat: 'D-M-YYYY',
-});
-setInterval(() => {
-    rec.captureImage(() => {
-        console.log('Image Captured')
-    })
-
 }, 1000);
-function base64Encode(file) {
-	const bitmap = fs.readFileSync(file);
-	return new Buffer(bitmap).toString('base64');
-}
 
-setTimeout(() => {
-	setInterval(() => {
-		let date = new Date()
-		date.setSeconds(date.getSeconds() - 5);
-		let path = `./cam1/${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}/image/${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}.jpg`;
-		let image = base64Encode(path);
-		firebase.database().ref('image/currentImage').set({
-			data: `data:image/jpeg;base64,${image}`
-		});
 
-	}, 1000);
-}, 10000);
-*/
-/*
-async function removeOldImagesFolder(days) {
-	let date = new Date();
-	date.setDate(date.getDate() - days);
-	let folder = `./cam1/${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
-
-	try {
-		await fsExtra.remove(folder)
-	} catch (err) {
-		console.log(folder + " folder doesnt exist already")
-	}
-}
-removeOldImagesFolder(2);
-
-const imageToBase64 = require('image-to-base64');
-imageToBase64("https://root:ismart12@192.168.0.159/cgi-bin/currentpic.cgi") // you can also to use url
-    .then(
-        (response) => {
-            console.log(response); //cGF0aC90by9maWxlLmpwZw==
-        }
-    )
-    .catch(
-        (error) => {
-            console.log(error); //Exepection error....
-        }
-    )
-
-*/
