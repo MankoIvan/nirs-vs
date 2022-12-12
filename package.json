@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/MankoIvan/nirs-vs#readme",
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "ffmpeg": "0.0.4",
     "firebase": "^7.14.5",
     "image-to-base64": "^2.1.0",
